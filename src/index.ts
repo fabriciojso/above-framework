@@ -1,15 +1,16 @@
-/* eslint-disable */
 import Joi from '@hapi/joi';
 import Hapi from '@hapi/hapi';
 import RootPath from './utils/root-path';
 
 if (process.env.NODE_ENV === 'test') {
   require('dotenv').config({
+    quiet: true,
     path: RootPath.get(`../.env.testing`),
   });
 }
 
 require('dotenv').config({
+  quiet: true,
   path: RootPath.get(`../.env`),
 });
 

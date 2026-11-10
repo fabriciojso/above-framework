@@ -1,8 +1,6 @@
-/* eslint-disable */
 import { isArray, isDate, isEmpty, isObject } from 'lodash';
 
 import errorCatalog from '../apigee/error-catalog.apigee';
-
 
 export function isEmptyValue(object: any) {
   if (isArray(object)) {
@@ -16,7 +14,6 @@ export function isEmptyValue(object: any) {
   }
   return false;
 }
-
 
 export function isString(value: any) {
   return typeof value === 'string';
@@ -53,7 +50,6 @@ export function clearJson(object: any) {
   }
 }
 
-
 export const errorParser = (code: any, parameters: any, defaultStatusCode?: number) => {
   if (!isEmptyValue(parameters) && isString(parameters)) {
     parameters = [parameters];
@@ -68,10 +64,6 @@ export const errorParser = (code: any, parameters: any, defaultStatusCode?: numb
 
   const language = process.env.HAPI_LANGUAGE || 'en';
   let errorMessage = error[language] || error.en;
-
-  if (isEmptyValue(errorMessage)) {
-    errorMessage = error[language];
-  }
 
   if (isEmptyValue(errorMessage)) {
     throw new Error(`luizalabs-error: Error language ${language} not found for code ${code}`);
