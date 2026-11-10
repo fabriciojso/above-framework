@@ -1,6 +1,6 @@
 import Inert from '@hapi/inert';
 import Vision from '@hapi/vision';
-import hapiSwagger from 'hapi-swagger';
+import hapiSwagger from './swagger-compat';
 import jwt from 'jsonwebtoken';
 import { Server } from '@hapi/hapi';
 
@@ -56,7 +56,8 @@ const Swagger = {
       documentationPath: '/docs',
     };
 
-    await server.register([Inert, Vision]);
+    await server.register(Inert);
+    await server.register(Vision);
     await server.register({
       plugin: hapiSwagger,
       options: swaggerOptions,

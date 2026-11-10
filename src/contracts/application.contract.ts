@@ -1,4 +1,5 @@
-import { ServerRegisterPluginObject, RouteOptionsValidate, RouteOptionsCors } from '@hapi/hapi';
+import { ServerRegisterPluginObject, RouteOptionsCors } from '@hapi/hapi';
+import { CompatibleValidation } from './validation.contract';
 
 import { DatabaseContract } from './database.contract';
 import { ControllerContract } from './controller.contract';
@@ -6,7 +7,7 @@ import { ControllerContract } from './controller.contract';
 export type SchemaContract = {
   include?: RegExp;
   exclude?: RegExp;
-  source: RouteOptionsValidate;
+  source: CompatibleValidation;
 };
 
 export interface ApplicationContract {

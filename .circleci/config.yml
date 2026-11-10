@@ -1,52 +1,19 @@
-version: 2
+version: 2.1
 jobs:
-  build:
+  verify:
     docker:
-      - image: circleci/node:latest
-    working_directory: ~/above-framework
+      - image: node:26.13.0-bookworm
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: npm test
+      - run: npm ci --engine-strict
       - run: npm run lint
-      - run: npm run build
-
-  publish:
-    docker:
-      - image: circleci/node:latest
-    working_directory: ~/above-framework
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: npm install
-      - run: npm run build
-      - run: npm run semantic-release
-
+      - run: npm run test:coverage
+      - run: npm run test:types
+      - run: npm run test:package
+      - run: npm run doc
+      - store_artifacts:
+          path: coverage
 workflows:
-  version: 2
-  build:
+  verify:
     jobs:
-      - build
-      - publish:
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - build
+      - verify

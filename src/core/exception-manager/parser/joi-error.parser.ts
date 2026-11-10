@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { errorParser } from './apigee-error.parser';
 import errorCatalog from './error-catalog.joi';
 
@@ -7,10 +5,7 @@ const parsePath = (path: any) => {
   if (path instanceof Array) {
     path = path.length === 0 ? [''] : path;
     path = path.reduce((current: any, value: any) => {
-      return current
-        .toString()
-        .concat('.')
-        .concat(value);
+      return current.toString().concat('.').concat(value);
     });
   }
 
@@ -29,7 +24,7 @@ const parsePath = (path: any) => {
         indexParsed = `[${index.substring(0, index.length - 1)}].`;
       } else if (indexPosition === 'inner') {
         indexParsed = `[${index.substring(1, index.length - 1)}].`;
-      } else if (indexPosition === 'end') {
+      } else {
         indexParsed = `[${index.substring(1, index.length)}]`;
       }
       result = result.split(index).join(indexParsed);

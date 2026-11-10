@@ -1,6 +1,5 @@
 node_modules
 build
-test
 src/**.js
 .idea/*
 
@@ -126,3 +125,7 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+.superpowers/
+.artifacts/
+.test-build/

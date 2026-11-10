@@ -1,5 +1,7 @@
 import Hapi from '@hapi/hapi';
 import equal from 'fast-deep-equal';
+import Joi from 'joi';
+import validator from './joi-compat';
 
 import { ApplicationContract } from '../contracts/application.contract';
 import RootPath from '../utils/root-path';
@@ -22,7 +24,7 @@ class Ignition {
   private server: Hapi.Server;
 
   constructor(readonly options: ApplicationContract) {
-    const serverInstace = Ignition.instance.find(instance => equal(instance.key, options));
+    const serverInstace = Ignition.instance.find((instance) => equal(instance.key, options));
     if (serverInstace) {
       this.server = serverInstace.server;
     } else {
@@ -48,6 +50,7 @@ class Ignition {
           },
         },
       });
+      this.server.validator(validator as Joi.Root);
       RootPath.definePath(options.path);
       if (options.schemes && options.schemes.length > 0) {
         RoutesManager.defineSchemes(options.schemes);
@@ -60,7 +63,7 @@ class Ignition {
   }
 
   public async start() {
-    process.on('unhandledRejection', err => {
+    process.on('unhandledRejection', (err) => {
       consoleError(err);
       process.exit(1);
     });
@@ -76,9 +79,10 @@ class Ignition {
       await this.options.database.authenticate();
     }
 
+    await this.server.initialize();
     if (process.env.NODE_ENV !== 'test') {
       await this.server.start();
-      // eslint-disable-next-line no-console
+
       console.log('Server running on %s', this.server.info.uri);
     }
   }
@@ -91,7 +95,7 @@ class Ignition {
     ExceptionManager.set(this.server);
     ConsoleErrors.set(this.server);
     if (this.options.plugins && this.options.plugins.length > 0) {
-      this.server.register(this.options.plugins);
+      await this.server.register(this.options.plugins);
     }
 
     if (process.env.NODE_ENV === 'stage' || process.env.NODE_ENV === 'production') {

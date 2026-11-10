@@ -1,7 +1,6 @@
-import { Util, Server, ServerRoute, ResponseObject } from '@hapi/hapi';
+import { Util, Server, ServerRoute, ResponseObject, ResponseToolkit } from '@hapi/hapi';
 
 import RoutesManager, { RouteOptionsContract } from './routes-manager';
-import { HttpContract } from '..';
 
 export interface RegisterContract {
   server: Server;
@@ -10,7 +9,7 @@ export interface RegisterContract {
   name: string;
 }
 
-type MethodType = (http: HttpContract) => Promise<ResponseObject>;
+type MethodType = (http: { request: any; reply: ResponseToolkit }) => Promise<ResponseObject>;
 
 class ControllerManager {
   private static routes: any = [];

@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { errorParser } from './apigee-error.parser';
 
 export function responseSucess(data: any, options: any, customMeta: any) {

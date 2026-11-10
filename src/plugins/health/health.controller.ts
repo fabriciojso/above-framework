@@ -8,7 +8,6 @@ class HealthController {
 
   constructor(readonly database: DatabaseContract) {
     process.on('SIGTERM', () => {
-      /* eslint-disable-next-line */
       console.info('Got SIGTERM. Graceful shutdown start', new Date().toISOString());
       this.isShutdown = true;
     });
@@ -31,7 +30,7 @@ class HealthController {
           status: 'health',
         })
         .code(HTTPStatus.OK);
-    } catch (error) {
+    } catch (error: any) {
       return reply
         .response({
           status: 'unhealth',

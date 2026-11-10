@@ -8,94 +8,88 @@
   "license": "MIT",
   "keywords": [],
   "scripts": {
-    "describe": "npm-scripts-info",
-    "build": "tsc -p tsconfig.json",
-    "lint": "eslint '**/*.ts' --fix && tsc --noEmit",
-    "test": "jest --verbose --coverage --passWithNoTests",
-    "doc": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --out build/docs",
+    "build": "node scripts/clean-build.js && node node_modules/typescript/bin/tsc -p tsconfig.json",
+    "lint": "eslint src test scripts && node node_modules/typescript/bin/tsc --noEmit",
+    "test": "npm run build && npm run test:integration && npm run test:types",
+    "test:integration": "node test/integration.js",
+    "test:coverage": "npm run build && node scripts/test-coverage.js",
+    "test:types": "node scripts/test-types.js",
+    "test:package": "node scripts/test-package.js",
+    "test:matrix": "node scripts/test-matrix.js",
+    "format": "prettier --write src test scripts *.json *.js .github/workflows/*.yml .circleci/*.yml README.md docs .github/node-versions.json",
+    "format:check": "prettier --check src test scripts *.json *.js .github/workflows/*.yml .circleci/*.yml README.md docs .github/node-versions.json",
+    "doc": "typedoc --entryPoints src/index.ts --out build/docs",
     "commit": "git-cz",
-    "semantic-release": "semantic-release"
-  },
-  "scripts-info": {
-    "info": "Display information about the package scripts",
-    "build": "Clean and rebuild the project",
-    "fix": "Try to automatically fix any linting problems",
-    "test": "Lint and unit test the project",
-    "cov": "Rebuild, run tests, then create and open the coverage report",
-    "doc": "Generate HTML API documentation and open it in a browser",
-    "doc:json": "Generate API documentation in typedoc JSON format",
-    "version": "Bump package.json version, update CHANGELOG.md, tag release",
-    "reset": "Delete all untracked files and reset the repo to the last commit",
-    "prepare-release": "One-step: clean, build, test, publish docs, and prep a release"
+    "semantic-release": "semantic-release",
+    "prepack": "npm run build && node scripts/prepare-package.js",
+    "prepare": "node scripts/install-hooks.js",
+    "pack:artifact": "node scripts/pack.js",
+    "test:baseline": "node scripts/test-baseline.js"
   },
   "engines": {
-    "node": ">=8.9"
+    "node": ">=12.0.0"
   },
   "dependencies": {
-    "@hapi/hapi": "18.3.2",
-    "@hapi/inert": "5.2.1",
+    "@hapi/hapi": "20.3.0",
+    "@hapi/inert": "7.1.3",
     "@hapi/joi": "15.1.1",
-    "@hapi/vision": "5.5.3",
-    "@types/hapi__hapi": "18.2.5",
-    "abstract-logging": "1.0.0",
-    "boxen": "^4.2.0",
-    "bunyan": "^1.8.12",
-    "bunyan-logstash-tcp-fork": "^1.0.0",
-    "chalk": "^4.0.0",
-    "dotenv": "^8.2.0",
-    "fast-deep-equal": "^3.1.1",
-    "hapi-auth-jwt2": "8.6.1",
-    "hapi-swagger": "9.4.2",
-    "http-status": "^1.4.2",
-    "joi-extract-type": "15.0.0",
-    "jsonwebtoken": "^8.5.1",
-    "klaw-sync": "^6.0.0",
-    "lodash": "^4.17.15",
-    "md5": "^2.2.1",
-    "moment": "^2.24.0",
-    "ramda": "^0.27.0",
-    "youch": "^2.0.10",
-    "youch-terminal": "^1.0.0"
+    "@hapi/vision": "7.0.3",
+    "@types/hapi__hapi": "20.0.13",
+    "abstract-logging": "2.0.1",
+    "boxen": "5.1.2",
+    "bunyan": "1.8.15",
+    "bunyan-logstash-tcp-fork": "1.0.0",
+    "chalk": "4.1.2",
+    "dotenv": "18.0.10",
+    "fast-deep-equal": "3.1.3",
+    "hapi-auth-jwt2": "10.5.0",
+    "hapi-swagger": "14.5.5",
+    "http-status": "1.8.1",
+    "joi": "17.13.9",
+    "jsonwebtoken": "9.0.3",
+    "klaw-sync": "8.0.0",
+    "lodash": "4.18.1",
+    "moment": "2.31.0",
+    "ramda": "0.32.0",
+    "youch": "3.3.4",
+    "youch-terminal": "2.2.3",
+    "@hapi/content": "6.0.3",
+    "@hapi/wreck": "18.1.3",
+    "@types/hapi__joi": "15.0.3",
+    "openapi-types": "12.1.3",
+    "@types/hapi__catbox": "10.2.6",
+    "@types/hapi__shot": "4.1.6"
   },
   "devDependencies": {
-    "@bitjson/npm-scripts-info": "^1.0.0",
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
-    "@semantic-release/changelog": "^5.0.1",
-    "@semantic-release/git": "^7.0.16",
-    "@semantic-release/github": "^7.0.5",
-    "@types/boxen": "^3.0.1",
-    "@types/bunyan": "^1.8.6",
-    "@types/chalk": "^2.2.0",
-    "@types/dotenv": "^8.2.0",
-    "@types/hapi-auth-jwt2": "^8.6.1",
-    "@types/hapi__inert": "^5.2.0",
-    "@types/hapi__joi": "^15.0.3",
-    "@types/hapi__vision": "^5.5.1",
-    "@types/jest": "^25.1.4",
-    "@types/jsonwebtoken": "^8.3.8",
-    "@types/klaw-sync": "^6.0.0",
-    "@types/lodash": "^4.14.149",
-    "@types/md5": "^2.1.33",
-    "@types/moment": "^2.13.0",
-    "@types/ramda": "^0.27.3",
-    "@typescript-eslint/eslint-plugin": "^2.0.0",
-    "@typescript-eslint/parser": "^2.0.0",
-    "eslint": "^5.3.0",
-    "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-config-prettier": "^6.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.15.2",
-    "eslint-plugin-prettier": "^3.1.0",
-    "gh-pages": "^2.0.1",
-    "git-cz": "^3.2.1",
-    "husky": "^3.0.4",
-    "jest": "^24.9.0",
-    "prettier": "^1.18.2",
-    "semantic-release": "^15.13.24",
-    "ts-jest": "^24.0.2",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
+    "@semantic-release/changelog": "7.0.0",
+    "@semantic-release/git": "11.0.1",
+    "@semantic-release/github": "12.0.10",
+    "@semantic-release/npm": "13.2.0",
+    "@semantic-release/commit-analyzer": "13.0.1",
+    "@semantic-release/release-notes-generator": "14.1.1",
+    "@types/bunyan": "1.8.11",
+    "@types/hapi__inert": "5.2.3",
+    "@types/hapi__vision": "5.5.3",
+    "@types/jsonwebtoken": "9.0.10",
+    "@types/klaw-sync": "6.0.5",
+    "@types/lodash": "4.17.27",
+    "@types/ramda": "0.32.0",
+    "eslint": "10.14.0",
+    "typescript-eslint": "8.72.2",
+    "prettier": "3.9.10",
+    "typedoc": "0.28.20",
+    "git-cz": "4.9.0",
+    "husky": "9.1.7",
+    "semantic-release": "25.0.9",
+    "typescript": "6.0.3",
+    "@types/node": "26.6.6",
+    "istanbul-lib-instrument": "6.0.3",
+    "istanbul-lib-coverage": "3.2.2",
+    "istanbul-lib-report": "3.0.1",
+    "istanbul-reports": "3.2.0",
+    "typescript-legacy": "npm:typescript@4.9.5"
   },
   "prettier": {
     "semi": true,
@@ -106,39 +100,81 @@
   },
   "config": {
     "commitizen": {
-      "path": "cz-conventional-changelog"
+      "path": "git-cz"
     }
   },
   "release": {
-    "prepare": [
-      "@semantic-release/changelog",
-      "@semantic-release/npm",
-      {
-        "path": "@semantic-release/git",
-        "assets": [
-          "CHANGELOG.md",
-          "package.json",
-          "yarn.lock",
-          "app.json"
-        ],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-      }
-    ],
-    "publish": [
-      "@semantic-release/npm",
-      "@semantic-release/github"
+    "branches": [
+      "master"
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md",
+            "package.json",
+            "package-lock.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
       "@semantic-release/github"
     ]
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "npm run lint",
-      "pre-push": "npm run test"
+  "files": [
+    "build",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES",
+    "docs/compatibility.md"
+  ],
+  "overrides": {
+    "cookie": "0.7.2",
+    "z-schema": "5.0.4",
+    "glob@>=9": "14.0.4",
+    "minimatch@>=7": "11.0.5",
+    "@hapi/subtext": {
+      "@hapi/content": "6.0.3",
+      "@hapi/wreck": "18.1.3"
+    },
+    "@hapi/pez": {
+      "@hapi/content": "6.0.3"
+    },
+    "typedoc": {
+      "minimatch": "10.2.6"
     }
-  }
+  },
+  "bundleDependencies": [
+    "@hapi/hapi",
+    "@hapi/inert",
+    "@hapi/joi",
+    "@hapi/vision",
+    "abstract-logging",
+    "boxen",
+    "bunyan",
+    "bunyan-logstash-tcp-fork",
+    "chalk",
+    "dotenv",
+    "fast-deep-equal",
+    "hapi-auth-jwt2",
+    "hapi-swagger",
+    "http-status",
+    "joi",
+    "jsonwebtoken",
+    "klaw-sync",
+    "lodash",
+    "moment",
+    "ramda",
+    "youch",
+    "youch-terminal",
+    "@hapi/content",
+    "@hapi/wreck",
+    "openapi-types"
+  ]
 }
